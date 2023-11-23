@@ -1,12 +1,104 @@
-img {
-  max-width: 100%;
-}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;800&display=swap');
 
-.category {
-  font-weight: bold;
-}
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background-color: black;
+    color: #dedede;
+  }
 
-/* Sidan ska minst innehålla:
+  a,
+  p,
+  li,
+  ul {
+    color: #dedede;
+    margin: .2rem;
+    padding: 0rem;
+  }
+
+
+  .main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    background-color: #da8d45;
+    color: azure;
+  }
+
+
+
+  .main-nav>p {
+    cursor: pointer;
+    font-weight: 800;
+    margin: 1rem 0;
+  }
+
+  main {
+    max-width: 600px;
+    margin: 5rem auto 1rem auto;
+    border-radius: 1rem;
+    padding: 2rem;
+    background-color: #6b6b6b;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  #search-box {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  button {
+    margin: 2rem 2rem 2rem auto;
+    padding: 1rem 2rem;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 30rem;
+    margin: 0 auto;
+  }
+
+  label {
+    white-space: nowrap;
+  }
+
+  .category {
+    font-weight: bold;
+  }
+
+  /* form {
+  display: flex;
+} */
+
+  #form {
+    display: grid;
+    grid-template-columns: 3rem auto;
+
+  }
+
+  .fullwidth {
+    grid-column: 1 / -1;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* Sidan ska minst innehålla:
 - Description ->
 - Image
 - Alcohol by volume

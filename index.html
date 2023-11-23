@@ -10,6 +10,11 @@
 </head>
 
 <body>
+  <nav class="main-nav">
+    <p onclick="showHome()">Home</p>
+    <p onclick="showSearch()">Search</p>
+    <p onclick="showDetails()">Details</p>
+  </nav>
   <main id="landing-page">
     <article id="landing-card" class="card">
       <img id="landing-image" src="#" alt="" />
@@ -18,17 +23,41 @@
     </article>
     <button id="landing-button">Give me another beer</button>
   </main>
-  <main id="search-page">
+  <main id="search-page" class="hidden">
     <form id="form">
-      <input type="search" id="search-box" incremental="true" />
+      <input type="search" class="fullwidth" id="search-box" incremental="true" autofocus />
+      <p class="fullwidth">Search for</p>
+      <input type="checkbox" id="cb-beer_name" class="search-checkbox" checked>
+      <label for="cb-beer_name">Name</label>
+      <input type="checkbox" id="cb-malt" class="search-checkbox">
+      <label for="cb-malt">Malt</label>
+      <input type="checkbox" id="cb-hops" class="search-checkbox">
+      <label for="cb-hops">Hops</label>
+      <input type="checkbox" id="cb-yeast" class="search-checkbox">
+      <label for="cb-yeast">Yeast</label>
+
+      <input type="checkbox" id="cb-brewed_before" class="search-checkbox date">
+      <label for="cb-brewed_before">First Brewed Before
+        <input type="date" id="date-brewed_before" class="hidden dateSelector">
+      </label>
+
+      <input type="checkbox" id="cb-brewed_after" class="search-checkbox date">
+      <label for="date_brewed_after">First Brewed After
+        <input type="date" id="date-brewed_after" class="hidden dateSelector">
+      </label>
+
+      <input type="checkbox" id="date-abv_gt" class="search-checkbox">
+      <label for="cb-abv_gt">Alcohol greater than</label>
+      <input type="checkbox" id="cb-abv_lt" class="search-checkbox">
+      <label for="cb-abv_lt">Alcohol less than</label>
       <!-- <button type="submit">Sök</button> -->
-    </form>
-    <ul id="search-result"></ul>
-    <section id="search-nav"></section>
+      </for>
+      <ul id="search-result" class="fullwidth"></ul>
+      <section id="search-nav" class="fullwidth"></section>
   </main>
 
-  <main id="beer-info-page"></main>
-  <p>Test git</p>
+  <main id="beer-info-page" class="hidden"></main>
+
 </body>
 
 </html>

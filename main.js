@@ -1,4 +1,4 @@
-const base_url = `https://api.punkapi.com/v2/`
+const base_url = `https://api.punkapi.com/v2/beers`
 
 let beerCache = {}
 let pageNum = 1
@@ -12,13 +12,28 @@ const landingName = document.querySelector("#landing-name")
 const landingLink = document.querySelector("#landing-link")
 const landingButton = document.querySelector("#landing-button")
 
+
+
 const searchResult = document.querySelector("#search-result")
 const searchBox = document.querySelector("#search-box")
 const searchNav = document.querySelector("#search-nav")
 
 const infoPage = document.querySelector("#beer-info-page")
 
-landingLink.addEventListener("click", (e) => loadInfoPage(loadedbeer))
+//checkboxes
+const cbName = document.querySelector("#cb-beer_name")
+const cbMalt = document.querySelector("#cb-malt")
+const cbHops = document.querySelector("#cb-hops")
+const cbYeast = document.querySelector("#cb-yeast")
+const cbBrewedBefore = document.querySelector("#cb-brewed_before")
+const cbBrewedAfter = document.querySelector("#cb-brewed_after")
+const cbalcGreaterThan = document.querySelector("#cb-abv_gt")
+const cbalcLessThan = document.querySelector("#cb-abv_lt")
+
+landingLink.addEventListener("click", (e) => {
+  loadInfoPage(loadedbeer)
+  showDetails()
+}) 
 landingButton.addEventListener("click", () => loadLandingPage())
 
 //Next and prev buttons
@@ -38,16 +53,46 @@ searchNav.addEventListener("click", (e) => {
 //Load beer from result list
 searchResult.addEventListener("click", (e) => {
   const id = e.target.id
+  
   if (id) {
     loadInfoPage(beerCache[id])
+    showDetails()
   }
+  
 })
 
 //Search as we type in search box
 searchBox.addEventListener("input", (e) => {
   e.preventDefault()
-  searchByName(e.target.value)
+  searchBeer(e.target.value)
+  
 })
+
+
+const searchForm = document.querySelector('#form')
+
+searchForm.addEventListener('click', (e) => {
+  if (e.target.classList.contains("search-checkbox")) {
+    // console.log(e.target.id);
+    // if (e.target.id == "cb-brewed_before") {
+    //   document.querySelector("#date-brewed_before").classList.toggle("hidden")
+    // } 
+    searchBeer(searchBox.value)
+    toggleBoxes(e.target)
+  }
+})
+/* searchBox.addEventListener("input", (e) => {
+  e.preventDefault();
+  searchByName(e.target.value)
+
+
+const searchInput = searchBox.value;
+  const searchValues = searchInput.split(' ');
+
+  searchValues.forEach((value) => {
+    value = value.trim()
+  })
+}) */
 
 async function loadLandingPage() {
   const [beer, ..._] = await getUrl("https://api.punkapi.com/v2/beers/random")
@@ -58,6 +103,7 @@ async function loadLandingPage() {
     landingImage.src = "./img/noimage.png"
   }
   landingName.innerText = beer.name
+  loadInfoPage(loadedbeer)
   // landingLink.dataset.beerid = beer.id
 
   // loadInfoPage(beer)
@@ -80,9 +126,17 @@ function loadSearchPage() {
   // Klickar man på ett sökresultat ska man komma till Beer Info Page för den ölen.
 }
 
-async function searchByName(name) {
-  const found = await getUrl(`https://api.punkapi.com/v2/beers?beer_name=${name} `)
+async function searchBeer(lookingFor) {
+  pageNum = 1
+  if (!lookingFor) {
+    searchResult.innerHTML = ""
+    searchNav.innerHTML = ""
+    return
+  }
+  const found = await advancedSearch(lookingFor)
+  /* getUrl(`https://api.punkapi.com/v2/beers?beer_name=${name}`) */
 
+  console.log(found);
   //Resets
   beerCache = {}
 
@@ -90,9 +144,82 @@ async function searchByName(name) {
     found.forEach((beer) => {
       beerCache[beer.id] = beer
     })
-    prepareResult(name)
+  }
+  prepareResult(lookingFor)
+}
+
+/* const cbName = document.querySelector("#cb-name")
+const cbMalt = document.querySelector("#cb-malt")
+const cbHops = document.querySelector("#cb-malt")
+const cbYeast = document.querySelector("#cb-yeast")
+const cbBrewedBefore = document.querySelector("#cb-brewed_before")
+const cbBrewedAfter = document.querySelector("#cb-brewed_after")
+const cbalcGreaterThan = document.querySelector("#cb-abv_gt")
+const cbalcLessThan = document.querySelector("#cb-abv_lt") */
+
+// beer_name=${name}&malt=${malt}&hops=${}&yeast=${}&brewed_before${}&brewed_after${}&abv_gt${}&abv_lt${}
+//`https://api.punkapi.com/v2/beers`
+
+advancedSearch("punk")
+async function advancedSearch(lookingFor) {
+  let searchString = base_url+"?"
+
+const searchCheckbox = document.querySelectorAll(".search-checkbox")
+// console.log(searchCheckbox);
+
+searchCheckbox.forEach((box) => {
+  let query = box.id.replace("cb-", "");
+
+  searchString += toggleBoxes(box)
+  
+  if (box.checked) {
+    searchString += `${query}=${lookingFor}&`
+  }
+})
+return await getUrl(searchString)
+}
+
+
+function toggleBoxes(box) {
+  let searchString = ""
+
+  let query = box.id.replace("cb-", "");
+  if (box.classList.contains("date")) {
+    // console.log(box);
+    if(box.checked) {
+      const date = document.querySelector(`#date-${query}`)
+      date.classList.remove ("hidden")
+
+      const dateFromBox = date.value.split("-")
+      const lookForDate = `${dateFromBox[1]}-${dateFromBox[0]}` || ""//Yyyy mm dd => month year
+      searchString += `${query}=${lookForDate}&`
+
+    } else {
+      const date = document.querySelector(`#date-${query}`)
+      date.classList.add("hidden")
+    }
+  }
+  return searchString
+}
+
+//document.querySelectorAll('input[type="date"]')
+
+//lite skiss här nedan
+ /* async function searchByIngredient(ingredient, malt) {
+  const found = await getUrl(`https://api.punkapi.com/v2/beers?${ingredient}=${malt}`);
+
+  beerCache = {};
+  if (found.length > 0) {
+    found.forEach((beer) => {
+      beerCache[beer.id] = beer;
+    });
+    prepareResult(value);
   }
 }
+searchByIngredient("malt", "pilsner")
+ */
+
+// ingredients -> malt/hops -> name (kanske -> value)
 
 function prepareResult(name) {
   // Gör en array med de 10 vi ska visa
@@ -218,14 +345,41 @@ Sidan ska minst innehålla:
 - Listan får innehålla max 10 resultat. Om fler än 10 sökresultat finns ska listan vara paginerad.
 - Klickar man på ett sökresultat ska man komma till Beer Info Page för den ölen. */
 
+// landing page är ej hidden till en början 
+const landingPage = document.querySelector("#landing-page")
+const searchPage = document.querySelector("#search-page")
+const detailsPage = document.querySelector("#beer-info-page")
+
+function showHome()  {
+  landingPage.classList.remove("hidden");
+  searchPage.classList.add("hidden");
+  detailsPage.classList.add("hidden")
+}
+
+function showSearch() {
+    searchPage.classList.remove("hidden");
+    landingPage.classList.add("hidden");
+    detailsPage.classList.add("hidden");
+}
+
+function showDetails() {
+  
+  detailsPage.classList.remove("hidden");
+  landingPage.classList.add("hidden");
+  searchPage.classList.add("hidden");
+  
+}
+
 async function getUrl(url) {
   try {
     console.log("Trying ", url)
     const response = await fetch(url)
     if (!response.ok) throw new Error(`Error in fetching ${response.status}`)
     const jsObject = await response.json()
+  
     return jsObject
   } catch (error) {
     console.log(error)
   }
-}
+
+} 
