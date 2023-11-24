@@ -12,8 +12,6 @@ const landingName = document.querySelector("#landing-name")
 const landingLink = document.querySelector("#landing-link")
 const landingButton = document.querySelector("#landing-button")
 
-
-
 const searchResult = document.querySelector("#search-result")
 const searchBox = document.querySelector("#search-box")
 const searchNav = document.querySelector("#search-nav")
@@ -33,7 +31,7 @@ const cbalcLessThan = document.querySelector("#cb-abv_lt")
 landingLink.addEventListener("click", (e) => {
   loadInfoPage(loadedbeer)
   showDetails()
-}) 
+})
 landingButton.addEventListener("click", () => loadLandingPage())
 
 //Next and prev buttons
@@ -53,30 +51,27 @@ searchNav.addEventListener("click", (e) => {
 //Load beer from result list
 searchResult.addEventListener("click", (e) => {
   const id = e.target.id
-  
+
   if (id) {
     loadInfoPage(beerCache[id])
     showDetails()
   }
-  
 })
 
 //Search as we type in search box
 searchBox.addEventListener("input", (e) => {
   e.preventDefault()
   searchBeer(e.target.value)
-  
 })
 
+const searchForm = document.querySelector("#form")
 
-const searchForm = document.querySelector('#form')
-
-searchForm.addEventListener('click', (e) => {
+searchForm.addEventListener("click", (e) => {
   if (e.target.classList.contains("search-checkbox")) {
     // console.log(e.target.id);
     // if (e.target.id == "cb-brewed_before") {
     //   document.querySelector("#date-brewed_before").classList.toggle("hidden")
-    // } 
+    // }
     searchBeer(searchBox.value)
     toggleBoxes(e.target)
   }
@@ -136,7 +131,7 @@ async function searchBeer(lookingFor) {
   const found = await advancedSearch(lookingFor)
   /* getUrl(`https://api.punkapi.com/v2/beers?beer_name=${name}`) */
 
-  console.log(found);
+  console.log(found)
   //Resets
   beerCache = {}
 
@@ -148,52 +143,37 @@ async function searchBeer(lookingFor) {
   prepareResult(lookingFor)
 }
 
-/* const cbName = document.querySelector("#cb-name")
-const cbMalt = document.querySelector("#cb-malt")
-const cbHops = document.querySelector("#cb-malt")
-const cbYeast = document.querySelector("#cb-yeast")
-const cbBrewedBefore = document.querySelector("#cb-brewed_before")
-const cbBrewedAfter = document.querySelector("#cb-brewed_after")
-const cbalcGreaterThan = document.querySelector("#cb-abv_gt")
-const cbalcLessThan = document.querySelector("#cb-abv_lt") */
-
-// beer_name=${name}&malt=${malt}&hops=${}&yeast=${}&brewed_before${}&brewed_after${}&abv_gt${}&abv_lt${}
-//`https://api.punkapi.com/v2/beers`
-
 advancedSearch("punk")
 async function advancedSearch(lookingFor) {
-  let searchString = base_url+"?"
+  let searchString = base_url + "?"
 
-const searchCheckbox = document.querySelectorAll(".search-checkbox")
-// console.log(searchCheckbox);
+  const searchCheckbox = document.querySelectorAll(".search-checkbox")
 
-searchCheckbox.forEach((box) => {
-  let query = box.id.replace("cb-", "");
+  searchCheckbox.forEach((box) => {
+    let query = box.id.replace("cb-", "")
 
-  searchString += toggleBoxes(box)
-  
-  if (box.checked) {
-    searchString += `${query}=${lookingFor}&`
-  }
-})
-return await getUrl(searchString)
+    searchString += toggleBoxes(box)
+
+    if (box.checked) {
+      searchString += `${query}=${lookingFor}&`
+    }
+  })
+  return await getUrl(searchString)
 }
-
 
 function toggleBoxes(box) {
   let searchString = ""
 
-  let query = box.id.replace("cb-", "");
+  let query = box.id.replace("cb-", "")
   if (box.classList.contains("date")) {
     // console.log(box);
-    if(box.checked) {
+    if (box.checked) {
       const date = document.querySelector(`#date-${query}`)
-      date.classList.remove ("hidden")
+      date.classList.remove("hidden")
 
       const dateFromBox = date.value.split("-")
-      const lookForDate = `${dateFromBox[1]}-${dateFromBox[0]}` || ""//Yyyy mm dd => month year
+      const lookForDate = `${dateFromBox[1]}-${dateFromBox[0]}` || "" //Yyyy mm dd => month year
       searchString += `${query}=${lookForDate}&`
-
     } else {
       const date = document.querySelector(`#date-${query}`)
       date.classList.add("hidden")
@@ -201,23 +181,6 @@ function toggleBoxes(box) {
   }
   return searchString
 }
-
-//document.querySelectorAll('input[type="date"]')
-
-//lite skiss här nedan
- /* async function searchByIngredient(ingredient, malt) {
-  const found = await getUrl(`https://api.punkapi.com/v2/beers?${ingredient}=${malt}`);
-
-  beerCache = {};
-  if (found.length > 0) {
-    found.forEach((beer) => {
-      beerCache[beer.id] = beer;
-    });
-    prepareResult(value);
-  }
-}
-searchByIngredient("malt", "pilsner")
- */
 
 // ingredients -> malt/hops -> name (kanske -> value)
 
@@ -303,8 +266,8 @@ function loadInfoPage(beer) {
   <ul>
   ${makeIngredients(beer.ingredients.hops)}
   </ul>
-  <p><span class="category">Yeast:</span>${beer.ingredients.yeast}</p>
-  <p><span class="category">Brewers tips:</span>${beer.brewers_tips}</p>
+  <p><span class="category">Yeast:</span> ${beer.ingredients.yeast}</p>
+  <p><span class="category">Brewers tips:</span> ${beer.brewers_tips}</p>
   `
 
   infoPage.innerHTML += content
@@ -324,50 +287,29 @@ function loadInfoPage(beer) {
     })
     return (result += "</ul>")
   }
-
-  /* 
-  Denna sida ska bara gå att vi någon av de sidorna som beskrivs ovan.
-På denna sida ska användaren kunna få detaljerad information om en specifik öl.
-Sidan ska minst innehålla:
-- Description
-- Image
-- Alcohol by volume
-- Volume
-- Ingredients
-- Hops
-- Food pairing
-- Brewers tips */
 }
 
-/* - Användare ska kunna söka på en öl med hjälp av dess namn.
-- Sidan ska använda sig av ett formulär.
-- Resultatet av sökningen ska visas i en lista (endast namnen på ölen).
-- Listan får innehålla max 10 resultat. Om fler än 10 sökresultat finns ska listan vara paginerad.
-- Klickar man på ett sökresultat ska man komma till Beer Info Page för den ölen. */
-
-// landing page är ej hidden till en början 
+// landing page är ej hidden till en början
 const landingPage = document.querySelector("#landing-page")
 const searchPage = document.querySelector("#search-page")
 const detailsPage = document.querySelector("#beer-info-page")
 
-function showHome()  {
-  landingPage.classList.remove("hidden");
-  searchPage.classList.add("hidden");
+function showHome() {
+  landingPage.classList.remove("hidden")
+  searchPage.classList.add("hidden")
   detailsPage.classList.add("hidden")
 }
 
 function showSearch() {
-    searchPage.classList.remove("hidden");
-    landingPage.classList.add("hidden");
-    detailsPage.classList.add("hidden");
+  searchPage.classList.remove("hidden")
+  landingPage.classList.add("hidden")
+  detailsPage.classList.add("hidden")
 }
 
 function showDetails() {
-  
-  detailsPage.classList.remove("hidden");
-  landingPage.classList.add("hidden");
-  searchPage.classList.add("hidden");
-  
+  detailsPage.classList.remove("hidden")
+  landingPage.classList.add("hidden")
+  searchPage.classList.add("hidden")
 }
 
 async function getUrl(url) {
@@ -376,10 +318,9 @@ async function getUrl(url) {
     const response = await fetch(url)
     if (!response.ok) throw new Error(`Error in fetching ${response.status}`)
     const jsObject = await response.json()
-  
+
     return jsObject
   } catch (error) {
     console.log(error)
   }
-
-} 
+}
